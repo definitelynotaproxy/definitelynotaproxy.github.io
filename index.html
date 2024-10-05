@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D. F. N. P.</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+    <script>
+        let embed;
+        let observer;
+
+        function updateURLParameter(param, value) {
+            const url = new URL(window.location.href);
+            const params = new URLSearchParams(url.search);
+            params.set(param, value);
+            url.search = params.toString();
+            window.history.pushState({ path: url.href }, "", url.href);
+        }
+        function getURLParameter(param) {
+            const url = new URL(window.location.href);
+            const params = new URLSearchParams(url.search);
+            return params.get(param)
+        }
+
+        function load() {
+            embed = document.querySelector("embed");
+            observer = new MutationObserver(mutations => {
+                mutations.forEach(mutation => {
+                    if (mutation.type == "attributes" && mutation.attributeName == "src") {
+                        // update url parameters
+                        // alert("embed.src")
+                        updateURLParameter("url", btoa(embed.src))
+                    }
+                });
+            });
+            observer.observe(embed, { attributes: true });
+        }
+        function openURL(url) {
+            url = url.toLowerCase();
+            if (!(url.startsWith('https:') || url.startsWith('http:'))) {
+                url = 'https://' + url;
+            }
+            embed.src = url;
+        }
+    </script>
+</head>
+<body onerror="alert(event)" onload="load()">
+    <div style="height: 50px; background: #eee; padding: 10px;">
+        Source can be found <a href="https://github.com/definitelynotaproxy/definitelynotaproxy.github.io">here on Github</a><br>
+        <form onsubmit="
+            openURL(document.getElementById('url').value);
+            return false;
+        ">
+            <input
+                id="url"
+                style="box-sizing: border-box; width: 100%; padding: 5px 10px;"
+                placeholder="Enter URL here..."
+                autocomplete="off">
+        </form>
+    </div>
+    <embed style="box-sizing: border-box; width: 100%; height: calc(100vh - 70px);"
+        src="/nothing.html">
+</body>
+</html>
