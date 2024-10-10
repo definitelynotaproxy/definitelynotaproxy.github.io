@@ -24,7 +24,7 @@
         function getURLParameter(param) {
             const url = new URL(window.location.href);
             const params = new URLSearchParams(url.search);
-            return params.get(param)
+            return params.get(param);
         }
 
         function load() {
@@ -39,6 +39,13 @@
                 });
             });
             observer.observe(embed, { attributes: true });
+
+            const urlParamInitial = getURLParameter("url");
+            if (urlParamInitial) {
+                const initialUrl = atob(urlParamInitial);
+                openURL(initialUrl);
+                document.getElementById("url").value = initialUrl;
+            }
         }
         function openURL(url) {
             url = url.toLowerCase();
